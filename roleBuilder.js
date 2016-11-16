@@ -32,10 +32,7 @@ var roleBuilder = {
             moveToObject = creep.pos.findClosestByPath(arrayOfAvailableEnergy);
 
           if(creep.harvest(moveToObject) == ERR_INVALID_TARGET) {
-            console.log('ERR_INVALID_TARGET')
-            console.log(creep.withdraw(moveToObject))
             if(creep.withdraw(moveToObject,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              console.log('ERR_NOT_IN_RANGE')
               creep.moveTo(moveToObject);
             }
           }
