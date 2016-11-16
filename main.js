@@ -7,11 +7,15 @@ module.exports.loop = function () {
   
   var harvestersNumber = 2,
     buildersNumber = 2,
-    upgradersNumber = 2;
+    upgradersNumber = 2,
+    roleUpperLimit = 6;
     
     //Make harvesters if running low on energy
-    if (Game.rooms['sim'].energyAvailable == 0){
-      harvestersNumber = harvestersNumber + 2;
+    if (Game.rooms['sim'].energyAvailable == 0 && harvestersNumber <= roleUpperLimit){
+      harvestersNumber = harvestersNumber + 1;
+    }
+    if (Game.rooms['sim'].energyAvailable == Game.rooms['sim'].energyCapacityAvailable) {
+      harvestersNumber = 0;
     }
     //Remove builders if nothing to build
     if (Game.rooms['sim'].find(FIND_CONSTRUCTION_SITES) == 0){
@@ -46,7 +50,7 @@ module.exports.loop = function () {
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 
-    console.log('harvesters: ' + harvesters.length + '/' + harvestersNumber + '|builders: ' + builders.length + '/' + buildersNumber+'|upgraders: ' + upgraders.length + '/' + upgradersNumber)
+    //console.log('harvesters: ' + harvesters.length + '/' + harvestersNumber + '|builders: ' + builders.length + '/' + buildersNumber+'|upgraders: ' + upgraders.length + '/' + upgradersNumber)
     
     
     balanceRoles.run(harvesters, harvestersNumber, 'harvester')
