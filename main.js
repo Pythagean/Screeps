@@ -5,9 +5,20 @@ var balanceRoles = require('balanceRoles');
 
 module.exports.loop = function () {
   
-  var harvestersNumber = 5,
-    buildersNumber = 3,
+  var harvestersNumber = 2,
+    buildersNumber = 2,
     upgradersNumber = 2;
+    
+    //Make harvesters if running low on energy
+    if (Game.rooms['sim'].energyAvailable == 0){
+      harvestersNumber = harvestersNumber + 2;
+    }
+    //Remove builders if nothing to build
+    if (Game.rooms['sim'].find(FIND_CONSTRUCTION_SITES) == 0){
+      buildersNumber = 0;
+    }
+    
+    
 
     var tower = Game.getObjectById('2fca61e55fdc529c0e13e8b7');
     if(tower) {
@@ -35,30 +46,13 @@ module.exports.loop = function () {
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 
-    var harvestersChange = harvestersNumber - harvesters.length,
-      buildersChange = buildersNumber - builders.length,
-      upgradersChange = upgradersNumber - upgraders.length;
-      
-    //console.log('harvestersChange('+harvestersChange+'), buildersChange('+buildersChange+'), upgradersChange('+upgradersChange+')')
-    
-    balanceRoles.run(harvesters,builders,upgraders,harvestersChange,buildersChange,upgradersChange);
-    balanceRoles.run(builders,harvesters,upgraders,buildersChange,harvestersChange,upgradersChange);
-    balanceRoles.run(upgraders,builders,harvesters,upgradersChange,buildersChange,harvestersChange);
+    console.log('harvesters: ' + harvesters.length + '/' + harvestersNumber + '|builders: ' + builders.length + '/' + buildersNumber+'|upgraders: ' + upgraders.length + '/' + upgradersNumber)
     
     
+    balanceRoles.run(harvesters, harvestersNumber, 'harvester')
+    balanceRoles.run(builders, buildersNumber, 'builder')
+    balanceRoles.run(upgraders, upgradersNumber, 'upgrader')
     
-    /*if(harvesters.length < 4 && Game.rooms['sim'].energyAvailable >= 300) {
-        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'harvester'});
-        console.log('Spawning new harvester: ' + newName);
-    }
-    if(builders.length < 4 && Game.rooms['sim'].energyAvailable >= 300) {
-        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'builder'});
-        console.log('Spawning new builder: ' + newName);
-    }
-    if(upgraders.length < 3 && Game.rooms['sim'].energyAvailable >= 300) {
-        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'upgrader'});
-        console.log('Spawning new upgrader: ' + newName);
-    }*/
     
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
