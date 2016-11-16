@@ -16,6 +16,7 @@ module.exports.loop = function () {
     if (Game.rooms['sim'].energyAvailable == 0 && harvestersNumber <= roleUpperLimit){
       harvestersNumber = harvestersNumber + 1;
     }
+    //Remove harvesters if 
     if (Game.rooms['sim'].energyAvailable == Game.rooms['sim'].energyCapacityAvailable) {
       harvestersNumber = 0;
     }
@@ -24,7 +25,7 @@ module.exports.loop = function () {
       buildersNumber = 0;
     }
     //Add repariers if there are structures in need of repair
-    if (Game.rooms['sim'].find(FIND_STRUCTURES, {filter: (structure) => structure.hits < structure.hitsMax}).length > 0){
+    if (Game.rooms['sim'].find(FIND_STRUCTURES, {filter: (structure) => (structure.hits/0.9) < structure.hitsMax}).length > 0){
       repairersNumber = 2;
     }
     

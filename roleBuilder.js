@@ -23,10 +23,25 @@ var roleBuilder = {
             }
 	    }
 	    else {
-	        var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0]);
+	        var sources = creep.room.find(FIND_SOURCES),
+              structuresWithEnergy = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => structure.energy >= creep.carryCapacity
+              });
+            
+          var arrayOfAvailableEnergy = sources.concat(structuresWithEnergy),
+            moveToObject = creep.pos.findClosestByPath(arrayOfAvailableEnergy);
+
+          if(creep.harvest(moveToObject) == ERR_INVALID_TARGET) {
+            console.log('ERR_INVALID_TARGET')
+            console.log(creep.withdraw(moveToObject))
+            if(creep.withdraw(moveToObject,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+              console.log('ERR_NOT_IN_RANGE')
+              creep.moveTo(moveToObject);
             }
+          }
+          if(creep.harvest(moveToObject) == ERR_NOT_IN_RANGE) {
+              creep.moveTo(moveToObject);
+          }
 	    }
 	}
 };
